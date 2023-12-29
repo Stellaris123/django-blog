@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+{% load static category %}
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}博客首页{% endblock %}</title>
+	<link rel="icon" href="{% static 'users/images/Stellaris.png' %}" type="image/x-icon">
+	
+	<link rel="stylesheet" href="{% static 'users/css/bulma.min.css' %}">
+	<link rel="stylesheet" href="{% static 'users/css/move-menu.css' %}" />
+    <link rel="stylesheet" href="{% static 'users/font/iconfont.css' %}" />
+    <link rel="stylesheet" href="{% static 'users/font1/iconfont.css' %}" />
+	
+	<link rel="stylesheet" href="{% static 'users/css/view-line.css' %}" />
+	<link rel="stylesheet" href="{% static 'users/css/top-menu.css' %}" />
+
+	<link rel="stylesheet" href="{% static 'users/css/mainsection.css' %}" />
+	
+	<script type="text/javascript" src="{% static 'users/js/view-line.js' %}"></script>
+</head>
+<body>
+	<!--顶部浏览条-->
+	<progress id="content_progress" value="0"></progress>
+	<!--顶部固定菜单栏-->
+	<div class="top-menu">
+		<a href="/"><h1 class="logo">Stellaris<span>blog.</span></h1></a>
+		{% if user.is_authenticated %}<!-- 已登录 -->
+			<ul>
+				<li><a href="./friend-link.html">友链</a></li>
+				<li><a href="#">分类</a>
+					<div class="dropdown-menu">
+						<ul>
+							<!-- 获取分类列表 -->
+							{% get_category_list as category_list %}
+							{% for category in category_list %}
+								<li><a href="{% url 'blog:category_list' category.id %}">
+									{{ category.name }}
+								</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</li>
+				<li><a href="">关于网站</a></li>
+			</ul>
+		{% else %}<!-- 未登录 -->
+			<div class="buttons">
+				<a class="button is-primary" href="{% url 'users:register' %}" target="_blank">
+					<strong>注册</strong>
+				</a>
+				<a class="button is-light" href="{% url 'users:login' %}" target="_blank">
+					登录
+				</a>
+			</div>
+		{% endif %}
+	</div>
+
+	{% if user.is_authenticated %}
+		<!--侧边固定人物信息栏目-->
+		<div class="move-menu">
+			<div class="point">
+				<div class="point-item"> </div>
+				<div class="point-item"> </div>
+				<div class="point-item"> </div>
+			</div>
+			<!--头像-->
+			<div class="icon">
+				<div class="icon-img">
+					<img src="{% static 'users/images/headimg.jpg' %}" alt="" />
+				</div>
+				<div class="icon-con">
+					<username>{{ request.user.username }}</username><br>
+					<introduction>{{ user.userprofile.gexing }}</introduction>
+				</div>
+			</div>
+			<div class="cutoff-line"></div>
+			<div class="info">
+				<div class="box1">
+					<p>129</p>
+					粉丝
+				</div>
+				<div class="box2">
+					<p>19</p>
+					关注
+				</div>
+				<div class="box3">
+					<p>55</p>
+					收藏
+				</div>
+			</div>
+			<div class="cutoff-line"></div>
+			<div class="main">
+				<a class="item" href="{% url 'users:user_profile' %}" target="_blank">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-wenjian"></span></div>
+					<div class="con">个人信息</div>
+				</a>
+				<div class="item">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-xiaolian"></span></div>
+					<div class="con">好友列表</div>
+				</div>
+				<!-- <div class="item" onclick="window.open('background-postmanagement.html')">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-wenjian1"></span></div>
+					<div class="con">文章管理</div>
+				</div> -->
+				<div class="item" onclick="window.open('selfinfo-myfavorite.html','_parent')">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-shexiang"></span></div>
+					<div class="con">我的收藏</div>
+				</div>
+				<div class="item">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-qipao1"></span></div>
+					<div class="con">网站反馈</div>
+				</div>
+				<a class="item" href="{% url 'admin:index' %}" target="_blank">
+					<div class="light"></div>
+					<div class="licon"><span class="iconfont icon-shexiang1"></span></div>
+					<div class="con">后台(管理员)</div>
+				</a>
+			</div>
+			<div class="cutoff-line"></div>
+			<!-- <div class="title">
+				<p>Sever 6</p>
+			</div> -->
+			<div class="main">
+				<div class="item">
+					<div class="licon"><span class="iconfont icon-sousuo"></span></div>
+					<div class="con">查找</div>
+				</div>
+				<div class="item">
+					<div class="licon"><span class="iconfont icon-caidan"></span></div>
+					<div class="con">应用库</div>
+				</div>
+				<div class="item">
+					<div class="licon"><span class="iconfont icon-renqun"></span></div>
+					<div class="con">设置</div>
+				</div>
+				<div class="item" onclick="window.open('index.html','_parent')">
+					<div class="licon"><span class="iconfont icon-gengduo-a"></span></div>
+					<div class="con"><a href="{% url 'users:logout' %}">退出登录</a></div>
+					
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<!--侧边固定人物信息栏目-->
+		<div class="move-menu">
+			<div class="point">
+				<div class="point-item"> </div>
+				<div class="point-item"> </div>
+				<div class="point-item"> </div>
+			</div>
+			<!--头像-->
+			<div class="icon">
+				<div class="icon-img"><img src="{% static 'users/images/headimg.jpg' %}" alt="" /></div>
+				<div class="icon-con">
+					<username>请登录</username><br>
+					<introduction>右上角(注册/登录)</introduction>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	<!--页面内容-->
+	<video src="{% static 'users/images/linmeng.mp4' %}" class="background" autoplay loop muted></video>
+	<div class="mainsection">
+		<div class="top">
+			<div class="blog">
+				{% block section %}
+					{% block archives %}<!-- 这里可以拿来写公告 -->{% endblock  %}
+					{% if page_obj %} <!-- 如果存在文章 -->
+						{% for post in page_obj %} <!-- 遍历加载 -->
+							<div class="box_">
+								<h1>
+									<a href="{% url 'blog:post_detail' post.id %}"> {{ post.title }}</a>
+								</h1>
+								<span>作者：{{ post.owner }}</span> <span>发布日期：{{ post.add_date }}</span>
+								<!-- https://docs.djangoproject.com/zh-hans/3.2/ref/templates/builtins/#truncatechars  官方文档 -->
+								<p>{{ post.desc|truncatechars:200 }}</p>
+							</div>
+							<div class="blog-gap"></div>
+						{% endfor %}
+					{% else %}
+						<div class="box_">
+							<p>文章不存在！</p>
+						</div>
+					{% endif %}
+					
+					{% if page_obj %}
+						<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+							{% if page_obj.has_previous %}
+								<a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+							{% endif %}
+
+							{% if page_obj.has_next %}
+							<a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+							{% endif %}
+
+							<ul class="pagination-list">
+								{% if page_obj.has_previous %}
+									<li><a class="pagination-link" aria-label="Goto page 45" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+								{% endif %}
+									<li><a class="pagination-link is-current" aria-label="Page {{ page_obj.number }}" aria-current="page" href='?page={{ page_obj.number }}'>{{ page_obj.number }}</a></li>
+								{% if page_obj.has_next %}
+									<li><a class="pagination-link" href="?page={{ page_obj.next_page_number }}" aria-label="Goto page {{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+								{% endif %}
+							</ul>
+						</nav>
+					{% endif %}
+				{% endblock %}
+			</div>
+			<div class="sidebar">
+				{% block right %}
+					{% get_sidebar_list as sidebar_list %}
+					{% for sidebar in sidebar_list %}
+					<div class="box">
+						<h1 class=" is-size-5 title">{{ sidebar.title }}</h1>
+						<p>{{ sidebar.get_content|safe }}</p>
+					</div>
+					{% endfor %}
+				{% endblock %}
+			</div>
+		</div>
+		{% block footer %}
+			<div class="bottom">
+				Copyright © by LIJUNLIN All Rights Reserved.<br>
+				粤ICP备2022020312号-1
+			</div>
+		{% endblock %}
+	</div>
+</body>
+</html>
