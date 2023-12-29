@@ -1,0 +1,40 @@
+# Base images 基础镜像
+FROM centos:7.9.2009
+
+#MAINTAINER 维护者信息
+LABEL maintainer junlinli12@outlook.com
+
+# git
+RUN yum install git -y
+RUN git config --global user.name "武沛齐"
+RUN git config --global user.email "wupeiqi@live.com"
+
+# git拉代码
+WORKDIR /data/
+RUN git clone https://gitee.com/wupeiqi/blog.git
+
+# 虚拟环境
+WORKDIR /data/blog/
+RUN pip3.9 install virtualenv
+RUN virtualenv  /envs/blog --python=python3.9
+RUN /envs/blog/bin/pip3.9 install -r requirements.txt
+
+# 收集静态资源
+WORKDIR /data/blog/
+RUN /envs/blog/bin/python manage.py collectstatic
+
+# 安装uwsgi
+RUN /envs/blog/bin/pip3.9 install uwsgi
+
+# 安装nginx
+WORKDIR /data/blog/
+RUN rpm -Uvh  http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+RUN yum install nginx -y
+RUN cp ./blog.conf /etc/nginx/myblog.conf
+
+# 运行项目
+WORKDIR /data/blog
+
+# CMD ["/envs/blog/bin/uwsgi","--ini","uwsgi.ini"]
+# CMD ["nginx","-c","/etc/nginx/myblog.conf","-g","daemon off;"]
+CMD ["/bin/sh","run.sh"]
